@@ -13,7 +13,7 @@ cp .env.example .env
 ```
 
 ```
-composer insatall
+composer install
 ```
 
 ```
@@ -43,6 +43,7 @@ npm run dev
 ```
 
 for demo login:
+
 email -
 
 ```
