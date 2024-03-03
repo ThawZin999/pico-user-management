@@ -43,5 +43,14 @@ npm run dev
 ```
 
 for demo login:
-email - `adminone@gmail.com `
-password - `password`
+email -
+
+```
+adminone@gmail.com
+```
+
+password -
+
+```
+password
+```
