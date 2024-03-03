@@ -15,7 +15,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
          // Get permission IDs
-         $permissions = ['view-any', 'view', 'create', 'update', 'delete'];
+         $permissions = ['view-any','create','edit','delete'];
          $permissionIds = [];
          foreach ($permissions as $permission) {
              $permissionModel = Permission::create([
@@ -30,12 +30,10 @@ class PermissionSeeder extends Seeder
          $viewerRole = Role::where('name', 'viewer')->first();
 
 
-         $adminRole->permissions()->detach();
-
          $adminRole->permissions()->sync($permissionIds);
 
-         $editorRole->permissions()->sync([$permissionIds['view'], $permissionIds['update']]);
+         $editorRole->permissions()->sync([$permissionIds['view-any'], $permissionIds['edit']]);
 
-         $viewerRole->permissions()->sync([$permissionIds['view']]);
+         $viewerRole->permissions()->sync([$permissionIds['view-any']]);
     }
 }

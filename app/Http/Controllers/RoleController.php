@@ -15,7 +15,7 @@ class RoleController extends Controller
      */
     public function index(User $user)
     {
-         if ($user->cannot('view-any', Role::class)) {
+        if ($user->cannot('view-any', Role::class)) {
             abort(403);
         }
         $roles = Role::all();
@@ -25,8 +25,11 @@ class RoleController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(User $user)
     {
+        if ($user->cannot('create', Role::class)) {
+            abort(403);
+        }
         $permissions = Role::all();
         $features = Feature::all();
         return view('roles.create', compact('permissions', 'features'));
@@ -50,6 +53,7 @@ class RoleController extends Controller
         $role = Role::create([
         'name' => $validatedData['role-name'],
         ]);
+
         if (isset($validatedData['permissions'])) {
         $permissions = Permission::whereIn('name', $validatedData['permissions'])->get();
         $role->permissions()->attach($permissions);
@@ -72,8 +76,11 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $role)
+    public function edit(User $user,Role $role)
     {
+        if ($user->cannot('edit', Role::class)) {
+            abort(403);
+        }
         $permissions = Permission::all();
         $features = Feature::all();
         return view('roles.edit', compact('role', 'permissions', 'features'));
@@ -82,44 +89,37 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Role $role)
+
+    public function update(Request $request,Role $role)
     {
-        if($request->user()->cannot('update', Role::class)){
+        if ($request->user()->cannot('edit', Role::class)) {
             abort(403);
         }
-
-        try {
-             // Validate the form data
-        $validatedData = $request->validate([
-        'role-name' => 'required|string|max:255',
-        'permissions' => 'array',
+        $request->validate([
+            'role-name' => 'required|string|max:255',
+            'permissions' => 'array',
         ]);
 
-        $role->update([
-        'name' => $validatedData['role-name'],
-        ]);
-        if (isset($validatedData['permissions'])) {
-        $role->permissions()->detach();
-        $permissions = Permission::whereIn('name', $validatedData['permissions'])->get();
-        $role->permissions()->attach($permissions);
-        }
+        $role->name = $request->input('role-name');
 
-         return redirect()->route('roles.index')->with('success', 'Role created successfully!');
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', $th->getMessage());
-        }
+        $permissionIds = Permission::whereIn('name', $request->input('permissions', []))->pluck('id');
+
+        $role->permissions()->sync($permissionIds);
+
+        $role->save();
+
+        return redirect()->route('roles.index')->with('success', 'Role updated successfully!');
     }
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Role $role)
+    public function destroy(User $user,Role $role)
     {
+        if ($user->cannot('delete', Role::class)) {
+            abort(403);
+        }
         if($role->users->count() > 0){
             return redirect()->back()->with('error', 'Role cannot be deleted because it is used by users');
-        }
-        if($role->permissions->count() > 0){
-            return redirect()->back()->with('error', 'Role cannot be deleted because it is used by permissions');
         }
 
         $role->delete();

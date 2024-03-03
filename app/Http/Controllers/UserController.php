@@ -13,18 +13,24 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(User $user)
     {
-        $user = auth()->user();
+        if ($user->cannot('view-any', User::class)) {
+            abort(403);
+        }
+        $currentUser = auth()->user();
         $users = User::latest()->paginate(10);
-        return view('users.index', compact('users'));
+        return view('users.index', compact('users','currentUser'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(User $user)
     {
+        if ($user->cannot('create', User::class)) {
+            abort(403);
+        }
         $roles = Role::all();
         return view('users.create', compact('roles'));
     }
@@ -57,7 +63,7 @@ class UserController extends Controller
 
         $user->password = Hash::make($validated['password']);
 
-       $user->save();
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'User created successfully!');
     } catch (\Throwable $th) {
@@ -76,9 +82,12 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        $user = User::findOrFail($id);
+        if ($user->cannot('edit', User::class)) {
+            abort(403);
+        }
+
         $roles = Role::all();
         return view('users.edit', compact('user', 'roles'));
     }
@@ -88,7 +97,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if ($request->user()->cannot('update', User::class)) {
+        if ($request->user()->cannot('edit', User::class)) {
             abort(403);
         }
 
@@ -126,7 +135,6 @@ class UserController extends Controller
         if ($user->cannot('delete', User::class)) {
             abort(403);
         }
-
         try {
             $user->delete();
             return redirect()->route('users.index')->with('success', 'User deleted successfully!');

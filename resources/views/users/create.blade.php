@@ -6,7 +6,7 @@
 
     <section class="bg-gray-50 dark:bg-gray-900 lg:h-full">
         <div class="md:ml-64 pt-20 h-auto p-2">
-            <h1>hello</h1>
+
             @if (session('error'))
                 <div class="alert alert-danger">
                     {{ session('error') }}

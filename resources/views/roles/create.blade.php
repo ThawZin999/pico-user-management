@@ -20,22 +20,28 @@
 
                         <div class="flex pt-3">
                             <div class="flex items-center me-4">
+                                <input id="create-user-checkbox" type="checkbox" name="permissions[]" value="view-any"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="create-user-checkbox"
+                                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">view</label>
+                            </div>
+                            <div class="flex items-center me-4">
                                 <input id="create-user-checkbox" type="checkbox" name="permissions[]" value="create"
                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                 <label for="create-user-checkbox"
-                                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">create-user</label>
+                                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">create</label>
                             </div>
                             <div class="flex items-center me-4">
                                 <input id="edit-user-checkbox" type="checkbox" name="permissions[]" value="edit"
                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                 <label for="edit-user-checkbox"
-                                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">edit-user</label>
+                                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">edit</label>
                             </div>
                             <div class="flex items-center me-4">
                                 <input id="delete-user-checkbox" type="checkbox" name="permissions[]" value="delete"
                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                 <label for="delete-user-checkbox"
-                                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">delete-user</label>
+                                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">delete</label>
                             </div>
                         </div>
                     </div>

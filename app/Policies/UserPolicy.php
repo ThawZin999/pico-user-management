@@ -40,9 +40,9 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(): bool
+    public function edit(): bool
     {
-        return $this->user->role->permissions->pluck('name')->contains('update');
+        return $this->user->role->permissions->pluck('name')->contains('edit');
     }
 
     /**

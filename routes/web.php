@@ -19,9 +19,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/create-user', function () {
-    return view('user.create-user');
-});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
