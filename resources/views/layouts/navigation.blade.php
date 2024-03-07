@@ -51,6 +51,14 @@
                         Role: {{ auth()->user()->role->name }}
                     </span>
                 </div>
+                <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
+                    <li>
+                        <a href="{{ route('profile.edit') }}"
+                            class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            Edit Profile
+                        </a>
+                    </li>
+                </ul>
 
                 <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                     <li>
