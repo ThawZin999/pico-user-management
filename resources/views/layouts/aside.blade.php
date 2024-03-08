@@ -21,7 +21,8 @@
 
                 </a>
             </li>
-            @can('create', auth()->user())
+
+            @if (showContent('User', 'create'))
                 <li>
                     <a href="
                 {{ route('users.create') }}
@@ -40,7 +41,7 @@
                     </a>
 
                 </li>
-            @endcan
+            @endif
             <li>
                 <a href="
                 {{ route('roles.index') }}
@@ -59,7 +60,7 @@
                 </a>
 
             </li>
-            @can('create', auth()->user())
+            @if (showContent('Role', 'create'))
                 <li>
                     <a href="{{ route('roles.create') }}"
                         class="{{ request()->is('roles/create') ? 'bg-gray-300 dark:bg-black' : '' }} flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -76,7 +77,7 @@
                     </a>
 
                 </li>
-            @endcan
+            @endif
         </ul>
     </div>
 

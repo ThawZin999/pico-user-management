@@ -10,7 +10,7 @@
                 <!-- Start coding here -->
                 <div class=" bg-white dark:bg-gray-800 relative shadow-md md:rounded-lg overflow-hidden">
                     <div class="overflow-x-auto">
-                        @can('create', \App\Models\Role::class)
+                        @if (showContent('Role', 'create'))
                             <div
                                 class="w-full p-2 md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center  md:space-x-3 flex-shrink-0">
 
@@ -22,7 +22,7 @@
                                             d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                     </svg>Add Role</a>
                             </div>
-                        @endcan
+                        @endif
 
 
                     </div>
@@ -38,43 +38,50 @@
                                     </th>
                                 </tr>
                             </thead>
-                            @foreach ($roles as $r)
+                            @foreach ($roles as $role)
                                 <tbody>
-
                                     <tr class="border-b dark:border-gray-700">
                                         <th scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $r->name }}
+                                            {{ $role->name }}
                                         </th>
 
-                                        <td class="px-6 py-4 flex flex-wrap ">
-                                            @foreach ($r->permissions as $p)
-                                                <div class=" px-2 m-1  text-white bg-blue-300 rounded-full">
-                                                    {{ $p->name }}
+                                        <td class="px-6 py-4 flex flex-wrap">
+                                            @foreach ($features as $feature)
+                                                <div>
+                                                    <h2>{{ $feature->name }}</h2>
+                                                    @foreach ($role->permissions as $permission)
+                                                        @if ($permission->feature_id == $feature->id)
+                                                            <div class="px-2 m-1 text-white bg-blue-300 rounded-full">
+                                                                {{ $permission->name }}
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
                                                 </div>
                                             @endforeach
                                         </td>
                                         <td class="px-6 py-4">
-                                            @canany(['edit', 'delete'], auth()->user())
-                                                <div class=" rounded-md inline-flex  shadow-sm ">
+                                            <div class=" rounded-md inline-flex  shadow-sm ">
+                                                @if (showContent('Role', 'edit'))
                                                     <a href="
-                                                {{ route('roles.edit', $r->id) }}
+                                                {{ route('roles.edit', $role->id) }}
                                                 "
                                                         class="px-3 py-2  text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 rounded-l-lg hover:bg-green-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-green-400 dark:focus:ring-blue-500 dark:focus:text-white">
                                                         Edit
                                                     </a>
-
-
+                                                @endif
+                                                @if (showContent('Role', 'delete'))
                                                     <div
                                                         class=" px-3 py-2  text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-r-md hover:bg-red-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-red-500 dark:focus:ring-blue-500 dark:focus:text-white">
-                                                        <form action="{{ route('roles.destroy', $r->id) }}" method="post">
+                                                        <form action="{{ route('roles.destroy', $role->id) }}"
+                                                            method="post">
                                                             @csrf
                                                             @method('DELETE')
                                                             <input type="submit" value="Delete">
                                                         </form>
                                                     </div>
-                                                </div>
-                                            @endcanany
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
 

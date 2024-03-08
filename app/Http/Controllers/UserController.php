@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PermissionHelper;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,14 +11,19 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+
+    protected $pHelper;
+
+    public function __construct()
+    {
+        $this->pHelper = new PermissionHelper();
+    }
     /**
      * Display a listing of the resource.
      */
     public function index(User $user)
     {
-        if ($user->cannot('view-any', User::class)) {
-            abort(403);
-        }
+        $this->pHelper->authorizeUser('User','view-any');
         $currentUser = auth()->user();
         $users = User::latest()->paginate(10);
         return view('users.index', compact('users','currentUser'));
@@ -28,9 +34,7 @@ class UserController extends Controller
      */
     public function create(User $user)
     {
-        if ($user->cannot('create', User::class)) {
-            abort(403);
-        }
+        $this->pHelper->authorizeUser('User','create');
         $roles = Role::all();
         return view('users.create', compact('roles'));
     }
@@ -40,9 +44,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-    if ($request->user()->cannot('create', User::class)) {
-        abort(403);
-    }
+        $this->pHelper->authorizeUser('User','create');
 
     $validated = $request->validate([
         'name' => 'required|string',
@@ -71,23 +73,13 @@ class UserController extends Controller
     }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(User $user)
     {
-        if ($user->cannot('edit', User::class)) {
-            abort(403);
-        }
-
+        $this->pHelper->authorizeUser('User','edit');
         $roles = Role::all();
         return view('users.edit', compact('user', 'roles'));
     }
@@ -97,10 +89,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if ($request->user()->cannot('edit', User::class)) {
-            abort(403);
-        }
-
+        $this->pHelper->authorizeUser('User','edit');
         $validated = $request->validate([
             'name' =>'required|string',
             'username' => ['required', Rule::unique('users')->ignore($id)],
@@ -132,9 +121,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if ($user->cannot('delete', User::class)) {
-            abort(403);
-        }
+        $this->pHelper->authorizeUser('User','delete');
         try {
             $user->delete();
             return redirect()->route('users.index')->with('success', 'User deleted successfully!');
