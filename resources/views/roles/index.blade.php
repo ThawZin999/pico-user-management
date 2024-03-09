@@ -48,7 +48,7 @@
 
                                         <td class="px-6 py-4 flex flex-wrap">
                                             @foreach ($features as $feature)
-                                                <div>
+                                                <div class="flex items-center me-4 ">
                                                     <h2>{{ $feature->name }}</h2>
                                                     @foreach ($role->permissions as $permission)
                                                         @if ($permission->feature_id == $feature->id)

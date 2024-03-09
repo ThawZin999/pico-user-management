@@ -20,8 +20,8 @@
                         </div>
                         @foreach ($features as $feature)
                             <h3>{{ $feature->name }}</h3>
-                            @foreach ($feature->permissions as $permission)
-                                <div class="flex pt-3">
+                            <div class="flex pt-3">
+                                @foreach ($feature->permissions as $permission)
                                     <div class="flex items-center me-4">
                                         <input type="checkbox" name="permissions[]" value="{{ $permission->id }}"
                                             id="{{ $permission->id }}"
@@ -30,8 +30,8 @@
                                         <label for="{{ $permission->id }}"
                                             class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $permission->name }}</label>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         @endforeach
                     </div>
                     <button type="submit"
