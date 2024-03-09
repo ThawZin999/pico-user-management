@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\PermissionHelper;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -42,35 +44,25 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
         $this->pHelper->authorizeUser('User','create');
 
-    $validated = $request->validate([
-        'name' => 'required|string',
-        'username' => 'required|unique:users',
-        'role_id' => 'required|exists:roles,id',
-        'phone' => 'required|string',
-        'email' => 'required|email|unique:users',
-        'address' => 'nullable|string',
-        'password' => 'required|string',
-        'gender' => ['required', Rule::in(['0', '1'])],
-        'is_active' => 'required|boolean'
-    ]);
+        $validated = $request->validated();
 
-    try {
-        $user = new User();
+        try {
+            $user = new User();
 
-        $user->fill($validated);
+            $user->fill($validated);
 
-        $user->password = Hash::make($validated['password']);
+            $user->password = Hash::make($validated['password']);
 
-        $user->save();
+            $user->save();
 
-        return redirect()->route('users.index')->with('success', 'User created successfully!');
-    } catch (\Throwable $th) {
-        return redirect()->back()->with('error', $th->getMessage());
-    }
+            return redirect()->route('users.index')->with('success', 'User created successfully!');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
 
@@ -87,27 +79,17 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $this->pHelper->authorizeUser('User','edit');
-        $validated = $request->validate([
-            'name' =>'required|string',
-            'username' => ['required', Rule::unique('users')->ignore($id)],
-            'role_id' =>'required|exists:roles,id',
-            'phone' =>'required|string',
-            'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
-            'address' => 'nullable|string',
-            'password' => 'nullable|string',
-            'gender' => ['required', Rule::in(['0', '1'])],
-            'is_active' =>'required|boolean'
-        ]);
+
+        $validated = $request->validated();
 
         if (empty($validated['password'])) {
             unset($validated['password']);
         }
 
         try {
-            $user = User::findOrFail($id);
             $user->update($validated);
             return redirect()->route('users.index')->with('success', 'User updated successfully!');
         } catch (\Throwable $th) {
