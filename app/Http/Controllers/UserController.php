@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Traits\HasPermissionsTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -14,18 +15,13 @@ use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
 
-    protected $pHelper;
-
-    public function __construct()
-    {
-        $this->pHelper = new PermissionHelper();
-    }
+    use HasPermissionsTrait;
     /**
      * Display a listing of the resource.
      */
     public function index(User $user)
     {
-        $this->pHelper->authorizeUser('User','view-any');
+        $this->authorizeUser('User','view-any');
         $currentUser = auth()->user();
         $users = User::latest()->paginate(10);
         return view('users.index', compact('users','currentUser'));
@@ -36,7 +32,7 @@ class UserController extends Controller
      */
     public function create(User $user)
     {
-        $this->pHelper->authorizeUser('User','create');
+        $this->authorizeUser('User','create');
         $roles = Role::all();
         return view('users.create', compact('roles'));
     }
@@ -46,7 +42,7 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $this->pHelper->authorizeUser('User','create');
+        $this->authorizeUser('User','create');
 
         $validated = $request->validated();
 
@@ -71,7 +67,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $this->pHelper->authorizeUser('User','edit');
+        $this->authorizeUser('User','edit');
         $roles = Role::all();
         return view('users.edit', compact('user', 'roles'));
     }
@@ -81,7 +77,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $this->pHelper->authorizeUser('User','edit');
+        $this->authorizeUser('User','edit');
 
         $validated = $request->validated();
 
@@ -103,7 +99,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $this->pHelper->authorizeUser('User','delete');
+        $this->authorizeUser('User','delete');
         try {
             $user->delete();
             return redirect()->route('users.index')->with('success', 'User deleted successfully!');

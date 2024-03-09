@@ -1,17 +1,19 @@
 <?php
-namespace App\Helpers;
+
+namespace App\Traits;
 
 use App\Models\Feature;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-class PermissionHelper{
-
-    public function getPermissionId($featureName,$permissionName){
-        $feature = Feature::where('name',$featureName)->first();
-        if($feature){
-            $permission = $feature->permissions->where('name',$permissionName)->first();
-            if($permission){
+trait HasPermissionsTrait
+{
+    public function getPermissionId($featureName, $permissionName)
+    {
+        $feature = Feature::where('name', $featureName)->first();
+        if ($feature) {
+            $permission = $feature->permissions->where('name', $permissionName)->first();
+            if ($permission) {
                 return $permission->id;
             }
         }
@@ -27,8 +29,9 @@ class PermissionHelper{
         return false;
     }
 
-    public function authorizeUser($featureName,$permissionName){
-        $permissionId = $this->getPermissionId($featureName,$permissionName);
+    public function authorizeUser($featureName, $permissionName)
+    {
+        $permissionId = $this->getPermissionId($featureName, $permissionName);
         if ($permissionId === null) {
             abort(Response::HTTP_FORBIDDEN, 'Unauthorized Access.');
         }
@@ -38,5 +41,4 @@ class PermissionHelper{
         }
         return true;
     }
-
 }

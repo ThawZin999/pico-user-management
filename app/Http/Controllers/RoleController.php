@@ -7,6 +7,7 @@ use App\Models\Feature;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use App\Traits\HasPermissionsTrait;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -15,15 +16,10 @@ class RoleController extends Controller
      * Display a listing of the resource.
      */
 
-     protected $pHelper;
-
-     public function __construct()
-     {
-         $this->pHelper = new PermissionHelper();
-     }
+    use HasPermissionsTrait;
     public function index(User $user)
     {
-        $this->pHelper->authorizeUser('Role','view-any');
+        $this->authorizeUser('Role','view-any');
         $roles = Role::all();
         $features = Feature::all();
         return view('roles.index', compact('roles','features'));
@@ -34,7 +30,7 @@ class RoleController extends Controller
      */
     public function create(User $user)
     {
-        $this->pHelper->authorizeUser('Role','create');
+        $this->authorizeUser('Role','create');
         $features = Feature::all();
         return view('roles.create', compact('features'));
     }
@@ -44,7 +40,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $this->pHelper->authorizeUser('Role','create');
+        $this->authorizeUser('Role','create');
 
         try {
         $validatedData = $request->validate([
@@ -73,7 +69,7 @@ class RoleController extends Controller
      */
     public function edit(User $user,Role $role)
     {
-        $this->pHelper->authorizeUser('Role','edit');
+        $this->authorizeUser('Role','edit');
         $permissions = Permission::all();
         $features = Feature::all();
         return view('roles.edit', compact('role', 'permissions', 'features'));
@@ -85,7 +81,7 @@ class RoleController extends Controller
 
     public function update(Request $request,Role $role)
     {
-        $this->pHelper->authorizeUser('Role','edit');
+        $this->authorizeUser('Role','edit');
         $request->validate([
             'role-name' => 'required|string|max:255',
             'permissions' => 'array',
@@ -106,7 +102,7 @@ class RoleController extends Controller
      */
     public function destroy(User $user,Role $role)
     {
-        $this->pHelper->authorizeUser('Role','delete');
+        $this->authorizeUser('Role','delete');
         if($role->users->count() > 0){
             return redirect()->back()->with('error', 'Role cannot be deleted because it is used by users');
         }

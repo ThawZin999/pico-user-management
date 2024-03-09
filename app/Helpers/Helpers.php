@@ -1,9 +1,8 @@
 <?php
-
-    use App\Helpers\PermissionHelper;
+    use App\Traits\HasPermissionsTrait;
 
     function showContent($featureName, $permissionName){
-        $pHelper = new PermissionHelper();
+        $pHelper = new class{ use HasPermissionsTrait;};
         $permissionId = $pHelper->getPermissionId($featureName,$permissionName);
         if ($permissionId === null) {
             return false;
