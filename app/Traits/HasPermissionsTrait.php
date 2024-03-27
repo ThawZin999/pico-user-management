@@ -33,11 +33,11 @@ trait HasPermissionsTrait
     {
         $permissionId = $this->getPermissionId($featureName, $permissionName);
         if ($permissionId === null) {
-            abort(Response::HTTP_FORBIDDEN, 'Unauthorized Access.');
+            abort(403, 'Unauthorized Access.');
         }
         $isAuthorized = $this->checkPermission($permissionId);
         if (!$isAuthorized) {
-            abort(Response::HTTP_FORBIDDEN, 'Unauthorized Access.');
+            abort(403, 'Unauthorized Access.');
         }
         return true;
     }
